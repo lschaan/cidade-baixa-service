@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/cucko")
+@RequestMapping("api/v1/")
 public class CidadeBaixaApi {
     @Autowired
     private CidadeBaixaService cidadeBaixaService;
 
-    @GetMapping
+    @GetMapping ("/list")
     public ResponseEntity<?> getParties(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam(required = false) ClubEnum club,
