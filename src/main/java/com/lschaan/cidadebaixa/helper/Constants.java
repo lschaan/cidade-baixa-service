@@ -5,4 +5,6 @@ public class Constants {
     public static final String DEFAULT_REQUESTED_WITH = "XMLHttpRequest";
     public static final String CUCKO_URL = "https://cucko.com.br";
     public static final String SYMPLA_URL = "https://www.sympla.com.br";
+
+    public static final String BR_DATE_PATTERN = "dd/MM/yyyy";
 }

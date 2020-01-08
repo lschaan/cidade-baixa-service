@@ -5,6 +5,7 @@ import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
 import com.lschaan.cidadebaixa.dto.SymplaDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
+import com.lschaan.cidadebaixa.helper.Constants;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -18,6 +19,11 @@ import static org.jsoup.Jsoup.parse;
 
 @Service
 public class HtmlService {
+
+    private static final Integer PRICE_INDEX = 1;
+    private static final Integer DATE_INDEX = 3;
+    private static final Integer DATE_START_INDEX = 11;
+    private static final Integer DATE_END_INDEX = 21;
 
     public List<String> getUrlListFromSympla(String html) {
         return parse(html)
@@ -63,8 +69,9 @@ public class HtmlService {
                 .map(x -> {
                     List<String> elements = x.getElementsByTag("span").eachText();
                     return TicketDTO.builder()
-                            .dueDate(LocalDate.parse(elements.get(3).substring(11, 21), DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                            .price(Double.valueOf(elements.get(1)
+                            .dueDate(LocalDate.parse(elements.get(DATE_INDEX).substring(DATE_START_INDEX, DATE_END_INDEX),
+                                    DateTimeFormatter.ofPattern(Constants.BR_DATE_PATTERN)))
+                            .price(Double.valueOf(elements.get(PRICE_INDEX)
                                     .replace(" ", "")
                                     .replace("R$", "")
                                     .replace(",", ".")))
