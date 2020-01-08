@@ -15,10 +15,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class PartyDTO {
-    private String partyName;
-    private LocalDate date;
-    private Boolean openBar;
-    private List<TicketDTO> tickets;
-    private String message;
-    private ClubEnum club;
+  private String partyName;
+  private LocalDate date;
+  private Boolean openBar;
+  private List<TicketDTO> tickets;
+  private String message;
+  private ClubEnum club;
 }

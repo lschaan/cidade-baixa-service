@@ -11,17 +11,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @Component
 public class CuckoClient {
-    @Autowired
-    private Client client;
+  @Autowired private Client client;
 
-    public List<CuckoResponse> getAll() {
-        return client.getAll(Constants.DEFAULT_USER_AGENT);
-    }
+  public List<CuckoResponse> getAll() {
+    return client.getAll(Constants.DEFAULT_USER_AGENT);
+  }
 
-    @FeignClient(name = "cucko-service", url = Constants.CUCKO_URL)
-    interface Client {
-        @GetMapping(value = "/api/v1/event")
-        List<CuckoResponse> getAll(
-                @RequestHeader("User-Agent") String userAgent);
-    }
+  @FeignClient(name = "cucko-service", url = Constants.CUCKO_URL)
+  interface Client {
+    @GetMapping(value = "/api/v1/event")
+    List<CuckoResponse> getAll(@RequestHeader("User-Agent") String userAgent);
+  }
 }

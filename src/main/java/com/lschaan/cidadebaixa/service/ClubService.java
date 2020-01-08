@@ -5,5 +5,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ClubService {
-    List<PartyDTO> getParties(LocalDate date, Double maxValue);
+  List<PartyDTO> getParties(LocalDate date, Double maxValue);
 }

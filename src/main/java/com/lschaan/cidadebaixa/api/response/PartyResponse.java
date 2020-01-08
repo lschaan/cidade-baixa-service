@@ -12,5 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class PartyResponse {
-    private List<PartyDTO> content;
+  private List<PartyDTO> content;
 }

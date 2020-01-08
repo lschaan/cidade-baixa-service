@@ -16,38 +16,44 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CuckoService implements ClubService {
-    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+  private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
-    @Autowired
-    private CuckoClient cuckoClient;
+  @Autowired private CuckoClient cuckoClient;
 
-    @Override
-    public List<PartyDTO> getParties(LocalDate date, Double maxValue) {
-        return cuckoClient.getAll().stream().map(party -> PartyDTO.builder()
-                .partyName(party.getName())
-                .date(LocalDate.parse(party.getDate(), DateTimeFormatter.ofPattern(DATE_PATTERN)))
-                .openBar(party.getMessage().contains("OPEN"))
-                .tickets(createTickets(party, maxValue))
-                .club(ClubEnum.CUCKO)
-                .build())
-                .filter(x -> date == null || x.getDate().isEqual(date))
-                .filter(x -> !x.getTickets().isEmpty())
-                .collect(Collectors.toList());
-    }
+  @Override
+  public List<PartyDTO> getParties(LocalDate date, Double maxValue) {
+    return cuckoClient.getAll().stream()
+        .map(
+            party ->
+                PartyDTO.builder()
+                    .partyName(party.getName())
+                    .date(
+                        LocalDate.parse(party.getDate(), DateTimeFormatter.ofPattern(DATE_PATTERN)))
+                    .openBar(party.getMessage().contains("OPEN"))
+                    .tickets(createTickets(party, maxValue))
+                    .club(ClubEnum.CUCKO)
+                    .build())
+        .filter(x -> date == null || x.getDate().isEqual(date))
+        .filter(x -> !x.getTickets().isEmpty())
+        .collect(Collectors.toList());
+  }
 
-    private List<TicketDTO> createTickets(CuckoResponse response, Double maxValue) {
-        List<TicketDTO> tickets = new ArrayList<>();
+  private List<TicketDTO> createTickets(CuckoResponse response, Double maxValue) {
+    List<TicketDTO> tickets = new ArrayList<>();
 
-        tickets.add(TicketDTO.builder()
-                .price(response.getPriceInAdvance())
-                .type(TicketEnum.IN_ADVANCE).build());
+    tickets.add(
+        TicketDTO.builder()
+            .price(response.getPriceInAdvance())
+            .type(TicketEnum.IN_ADVANCE)
+            .build());
 
-        tickets.add(TicketDTO.builder()
-                .price(response.getPriceOnSite())
-                .type(TicketEnum.ON_SITE).build());
+    tickets.add(
+        TicketDTO.builder().price(response.getPriceOnSite()).type(TicketEnum.ON_SITE).build());
 
-        return maxValue == null ? tickets : tickets.stream()
-                .filter(ticket -> ticket.getPrice() <= maxValue)
-                .collect(Collectors.toList());
-    }
+    return maxValue == null
+        ? tickets
+        : tickets.stream()
+            .filter(ticket -> ticket.getPrice() <= maxValue)
+            .collect(Collectors.toList());
+  }
 }

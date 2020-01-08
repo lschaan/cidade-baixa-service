@@ -12,8 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class SymplaDTO {
-    private String name;
-    private String startDate;
-    private String description;
-    private String detailsUrl;
+  private String name;
+  private String startDate;
+  private String description;
+  private String detailsUrl;
 }

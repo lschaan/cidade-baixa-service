@@ -8,15 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class TicketDTO {
-    private Double price;
-    private TicketEnum type;
-    private LocalDate dueDate;
+  private Double price;
+  private TicketEnum type;
+  private LocalDate dueDate;
 }

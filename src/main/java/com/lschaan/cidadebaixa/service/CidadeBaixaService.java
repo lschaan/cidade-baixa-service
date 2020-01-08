@@ -11,25 +11,27 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CidadeBaixaService {
-    private static Map<ClubEnum, ClubService> partyMap = new HashMap<>();
+  private static Map<ClubEnum, ClubService> partyMap = new HashMap<>();
 
-    public CidadeBaixaService(
-            CuckoService cuckoService,
-            NuvemService nuvemService) {
-        partyMap.put(ClubEnum.CUCKO, cuckoService);
-        partyMap.put(ClubEnum.NUVEM, nuvemService);
-    }
+  public CidadeBaixaService(CuckoService cuckoService, NuvemService nuvemService) {
+    partyMap.put(ClubEnum.CUCKO, cuckoService);
+    partyMap.put(ClubEnum.NUVEM, nuvemService);
+  }
 
-    public List<PartyDTO> getParties(LocalDate date, ClubEnum club, Double maxValue) {
-        return (club == null ? getAllParties(date, maxValue) : partyMap.get(club).getParties(date, maxValue));
-    }
+  public List<PartyDTO> getParties(LocalDate date, ClubEnum club, Double maxValue) {
+    return (club == null
+        ? getAllParties(date, maxValue)
+        : partyMap.get(club).getParties(date, maxValue));
+  }
 
-    private List<PartyDTO> getAllParties(LocalDate date, Double maxValue) {
-        return partyMap.values().stream()
-                .map(partyService -> partyService.getParties(date, maxValue))
-                .reduce(new ArrayList<>(), (list, listAll) -> {
-                    listAll.addAll(list);
-                    return listAll;
-                });
-    }
+  private List<PartyDTO> getAllParties(LocalDate date, Double maxValue) {
+    return partyMap.values().stream()
+        .map(partyService -> partyService.getParties(date, maxValue))
+        .reduce(
+            new ArrayList<>(),
+            (list, listAll) -> {
+              listAll.addAll(list);
+              return listAll;
+            });
+  }
 }

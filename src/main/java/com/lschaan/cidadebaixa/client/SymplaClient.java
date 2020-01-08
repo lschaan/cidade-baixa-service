@@ -13,40 +13,42 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @Service
 public class SymplaClient {
-    @Autowired
-    private Client client;
+  @Autowired private Client client;
 
-    public String findFromSympla(Integer id) {
-        String idString = "id=" + id;
-        return client.findFromSympla(
-                Constants.DEFAULT_REQUESTED_WITH,
-                Constants.DEFAULT_USER_AGENT,
-                MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-                idString);
-    }
+  public String findFromSympla(Integer id) {
+    String idString = "id=" + id;
+    return client.findFromSympla(
+        Constants.DEFAULT_REQUESTED_WITH,
+        Constants.DEFAULT_USER_AGENT,
+        MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+        idString);
+  }
 
-    public String findDetailsFromSympla(String url) {
-        return client.findDetailsFromSympla(
-                URI.create(url),
-                Constants.DEFAULT_REQUESTED_WITH,
-                Constants.DEFAULT_USER_AGENT,
-                MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-    }
+  public String findDetailsFromSympla(String url) {
+    return client.findDetailsFromSympla(
+        URI.create(url),
+        Constants.DEFAULT_REQUESTED_WITH,
+        Constants.DEFAULT_USER_AGENT,
+        MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+  }
 
-    @FeignClient(name = "sympla-service", url = Constants.SYMPLA_URL)
-    interface Client {
-        @PostMapping(value = "/site/futureUserPageEvents", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        String findFromSympla(
-                @RequestHeader("x-requested-with") String requestedWith,
-                @RequestHeader("user-agent") String userAgent,
-                @RequestHeader("Content-Type") String contentType,
-                @RequestBody String body);
+  @FeignClient(name = "sympla-service", url = Constants.SYMPLA_URL)
+  interface Client {
+    @PostMapping(
+        value = "/site/futureUserPageEvents",
+        produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+        consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    String findFromSympla(
+        @RequestHeader("x-requested-with") String requestedWith,
+        @RequestHeader("user-agent") String userAgent,
+        @RequestHeader("Content-Type") String contentType,
+        @RequestBody String body);
 
-        @GetMapping
-        String findDetailsFromSympla(
-                URI baseUrl,
-                @RequestHeader("x-requested-with") String requestedWith,
-                @RequestHeader("user-agent") String userAgent,
-                @RequestHeader("Content-Type") String contentType);
-    }
+    @GetMapping
+    String findDetailsFromSympla(
+        URI baseUrl,
+        @RequestHeader("x-requested-with") String requestedWith,
+        @RequestHeader("user-agent") String userAgent,
+        @RequestHeader("Content-Type") String contentType);
+  }
 }
