@@ -25,6 +25,12 @@ public class HtmlService {
   private static final Integer DATE_START_INDEX = 11;
   private static final Integer DATE_END_INDEX = 21;
 
+  private static final String DESCRIPTION = "http://schema.org/description";
+  private static final String NAME = "http://schema.org/name";
+  private static final String START_DATE = "http://schema.org/startDate";
+  private static final String OFFERS = "http://schema.org/offers";
+  private static final String URL = "http://schema.org/url";
+
   public List<String> getUrlListFromSympla(String html) {
     return parse(html).body().getElementsByClass("event-box event-box-245xs-290lg sympla-card")
         .stream()
@@ -39,15 +45,10 @@ public class HtmlService {
               Jsoup.parse(html).tagName("script").select("[type=application/ld+json]").html());
       Map jsonMap = JsonLdProcessor.compact(json, new HashMap<>(), new JsonLdOptions());
       return SymplaDTO.builder()
-          .description((String) jsonMap.get("http://schema.org/description"))
-          .name((String) jsonMap.get("http://schema.org/name"))
-          .startDate((String) ((Map) jsonMap.get("http://schema.org/startDate")).get("@value"))
-          .detailsUrl(
-              (String)
-                  ((Map)
-                          ((Map) jsonMap.get("http://schema.org/offers"))
-                              .get("http://schema.org/url"))
-                      .get("@id"))
+          .description((String) jsonMap.get(DESCRIPTION))
+          .name((String) jsonMap.get(NAME))
+          .startDate((String) ((Map) jsonMap.get(START_DATE)).get("@value"))
+          .detailsUrl((String) ((Map) ((Map) jsonMap.get(OFFERS)).get(URL)).get("@id"))
           .build();
     } catch (Exception e) {
       e.printStackTrace();
