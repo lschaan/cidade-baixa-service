@@ -1,9 +1,17 @@
 package com.lschaan.cidadebaixa.api;
 
 import com.lschaan.cidadebaixa.api.response.PartyResponse;
+import com.lschaan.cidadebaixa.client.SymplaClient;
+import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.service.CidadeBaixaService;
+import com.lschaan.cidadebaixa.service.HtmlService;
 import com.lschaan.cidadebaixa.type.ClubEnum;
+import io.swagger.annotations.ApiOperation;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +26,8 @@ public class CidadeBaixaApi {
     @Autowired
     private CidadeBaixaService cidadeBaixaService;
 
-    @GetMapping ("/list")
+    @GetMapping("/list")
+    @ApiOperation(value = "Get parties from cidade-baixa", response = PartyResponse.class)
     public ResponseEntity<?> getParties(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestParam(required = false) ClubEnum club,
