@@ -5,15 +5,16 @@ import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.dto.SymplaDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.type.ClubEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public abstract class SymplaService {
@@ -58,9 +59,7 @@ public abstract class SymplaService {
 
   private List<TicketDTO> getTickets(SymplaDTO symplaDTO, Double maxValue) {
     logger.info("Getting tickets for {} with max value {}", symplaDTO, maxValue);
-    List<TicketDTO> tickets =
-        htmlService.getTicketsFromSympla(
-            symplaClient.findDetailsFromSympla(symplaDTO.getDetailsUrl()));
+    List<TicketDTO> tickets = htmlService.getTicketsFromSympla(symplaDTO.getHtml());
     return maxValue == null
         ? tickets
         : tickets.stream()

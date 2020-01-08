@@ -6,16 +6,17 @@ import com.github.jsonldjava.utils.JsonUtils;
 import com.lschaan.cidadebaixa.dto.SymplaDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.helper.Constants;
+import org.jsoup.Jsoup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.jsoup.Jsoup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import static org.jsoup.Jsoup.parse;
 
@@ -54,6 +55,7 @@ public class HtmlService {
           .name((String) jsonMap.get(NAME))
           .startDate((String) ((Map) jsonMap.get(START_DATE)).get("@value"))
           .detailsUrl((String) ((Map) ((Map) jsonMap.get(OFFERS)).get(URL)).get("@id"))
+          .html(html)
           .build();
     } catch (Exception e) {
       logger.error("Unable to get party details from sympla html", e);

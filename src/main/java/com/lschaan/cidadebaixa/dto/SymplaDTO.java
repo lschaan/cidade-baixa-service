@@ -12,10 +12,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"description", "detailsUrl"})
+@ToString(exclude = {"description", "detailsUrl", "html"})
 public class SymplaDTO {
   private String name;
   private String startDate;
   private String description;
   private String detailsUrl;
+  private String html;
 }
