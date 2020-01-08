@@ -11,17 +11,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CuckoService implements ClubService {
+  private static final Logger logger = LoggerFactory.getLogger(CuckoService.class);
+
   private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
   @Autowired private CuckoClient cuckoClient;
 
   @Override
   public List<PartyDTO> getParties(LocalDate date, Double maxValue) {
+    logger.info("Getting party list from cucko service, date: {}, maxValue: {}", date, maxValue);
     return cuckoClient.getAll().stream()
         .map(
             party ->
@@ -39,6 +44,7 @@ public class CuckoService implements ClubService {
   }
 
   private List<TicketDTO> createTickets(CuckoResponse response, Double maxValue) {
+    logger.info("Creating tickets details from cucko {} with max value {}", response, maxValue);
     List<TicketDTO> tickets = new ArrayList<>();
 
     tickets.add(

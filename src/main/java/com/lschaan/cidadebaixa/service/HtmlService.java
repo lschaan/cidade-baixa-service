@@ -13,12 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import static org.jsoup.Jsoup.parse;
 
 @Service
 public class HtmlService {
+  private static final Logger logger = LoggerFactory.getLogger(HtmlService.class);
 
   private static final Integer PRICE_INDEX = 1;
   private static final Integer DATE_INDEX = 3;
@@ -32,6 +35,7 @@ public class HtmlService {
   private static final String URL = "http://schema.org/url";
 
   public List<String> getUrlListFromSympla(String html) {
+    logger.info("Getting party list from sympla html");
     return parse(html).body().getElementsByClass("event-box event-box-245xs-290lg sympla-card")
         .stream()
         .map(x -> x.getElementsByClass("event-box-link").attr("href"))
@@ -39,6 +43,7 @@ public class HtmlService {
   }
 
   public SymplaDTO getPartyFromSympla(String html) {
+    logger.info("Getting party details from sympla html");
     try {
       Object json =
           JsonUtils.fromString(
@@ -51,12 +56,13 @@ public class HtmlService {
           .detailsUrl((String) ((Map) ((Map) jsonMap.get(OFFERS)).get(URL)).get("@id"))
           .build();
     } catch (Exception e) {
-      e.printStackTrace();
-      return null;
+      logger.error("Unable to get party details from sympla html", e);
+      return new SymplaDTO();
     }
   }
 
   public List<TicketDTO> getTicketsFromSympla(String html) {
+    logger.info("Getting tickets details from sympla html");
     return Jsoup.parse(html).getElementById("ticket-form").getElementsByTag("td").not(".opt-panel")
         .stream()
         .map(

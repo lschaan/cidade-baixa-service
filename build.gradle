@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
     compile group: 'com.io-informatics.oss', name: 'jackson-jsonld', version: '0.0.5'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'

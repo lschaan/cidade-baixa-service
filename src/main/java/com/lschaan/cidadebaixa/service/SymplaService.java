@@ -10,11 +10,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public abstract class SymplaService {
+  private static final Logger logger = LoggerFactory.getLogger(SymplaService.class);
+
   private static final String DATE_PATTERN = "yyyy-MM-dd";
   private static final Integer DATE_START_INDEX = 0;
   private static final Integer DATE_END_INDEX = 10;
@@ -23,7 +27,8 @@ public abstract class SymplaService {
 
   @Autowired private HtmlService htmlService;
 
-  public List<PartyDTO> getParties(ClubEnum club, LocalDate date, Double maxValue) {
+  protected List<PartyDTO> getParties(ClubEnum club, LocalDate date, Double maxValue) {
+    logger.info("Getting sympla parties for club {}, date {}, max value {}", club, date, maxValue);
     try {
       return htmlService.getUrlListFromSympla(symplaClient.findFromSympla(club.getIdSympla()))
           .stream()
@@ -46,12 +51,13 @@ public abstract class SymplaService {
           .filter(x -> !x.getTickets().isEmpty())
           .collect(Collectors.toList());
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("Unable to get parties from sympla with club {}. Returning empty list", club, e);
       return new ArrayList<>();
     }
   }
 
   private List<TicketDTO> getTickets(SymplaDTO symplaDTO, Double maxValue) {
+    logger.info("Getting tickets for {} with max value {}", symplaDTO, maxValue);
     List<TicketDTO> tickets =
         htmlService.getTicketsFromSympla(
             symplaClient.findDetailsFromSympla(symplaDTO.getDetailsUrl()));
