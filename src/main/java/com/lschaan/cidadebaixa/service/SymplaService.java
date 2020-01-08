@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public abstract class SymplaService {
+    private static final String DATE_PATTERN = "yyyy-MM-dd";
+
     @Autowired
     private SymplaClient symplaClient;
 
@@ -29,7 +31,7 @@ public abstract class SymplaService {
                         return PartyDTO.builder()
                                 .partyName(symplaDTO.getName())
                                 .club(club)
-                                .date(LocalDate.parse(symplaDTO.getStartDate().substring(0, 10), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                                .date(LocalDate.parse(symplaDTO.getStartDate().substring(0, 10), DateTimeFormatter.ofPattern(DATE_PATTERN)))
                                 .openBar(symplaDTO.getDescription().contains("OPEN"))
                                 .tickets(getTickets(symplaDTO, maxValue))
                                 .build();
