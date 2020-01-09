@@ -4,10 +4,12 @@ import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.type.ClubEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -18,38 +20,55 @@ import java.util.stream.Collectors;
 public class CidadeBaixaService {
   private static final Logger logger = LoggerFactory.getLogger(CidadeBaixaService.class);
 
-  private static Map<ClubEnum, ClubService> partyMap = new HashMap<>();
+  private static final Map<ClubEnum, ClubService> partyMap = new HashMap<>();
 
-  public CidadeBaixaService(CuckoService cuckoService, NuvemService nuvemService) {
+  @Autowired private SymplaService symplaService;
+
+  public CidadeBaixaService(CuckoService cuckoService) {
     partyMap.put(ClubEnum.CUCKO, cuckoService);
-    partyMap.put(ClubEnum.NUVEM, nuvemService);
   }
 
-  public List<PartyDTO> getParties(LocalDate date, ClubEnum club, Double maxValue) {
+  public List<PartyDTO> getParties(ClubEnum club, LocalDate date, Double maxValue) {
     logger.info(
         "Started main service to get party list. date: {}, club: {}, max value: {}",
         date,
         club,
         maxValue);
-    return (club == null
+
+    return club == null
         ? getAllParties(date, maxValue)
-        : partyMap.get(club).getParties(date, maxValue));
+        : club.getIdSympla() == null
+            ? partyMap.get(club).getParties(date, maxValue)
+            : symplaService.getParties(club, date, maxValue);
   }
 
   private List<PartyDTO> getAllParties(LocalDate date, Double maxValue) {
-    logger.info(
-        "No club filters found, searching for all club parties, date {}, max value {}",
-        date,
-        maxValue);
-    return partyMap.values().stream()
-        .map(partyService -> partyService.getParties(date, maxValue))
-        .reduce(
-            new ArrayList<>(),
-            (list, listAll) -> {
-              listAll.addAll(list);
-              return listAll;
-            })
-        .stream()
+    logger.info("No club filters found, searching for all club parties");
+
+    logger.info("Getting parties from partyMap {}", partyMap.keySet());
+    List<PartyDTO> partyMapList =
+        partyMap.values().stream()
+            .map(partyService -> partyService.getParties(date, maxValue))
+            .reduce(
+                new ArrayList<>(),
+                (list, listAll) -> {
+                  listAll.addAll(list);
+                  return listAll;
+                });
+
+    logger.info("Getting parties from clubs listed in sympla");
+    partyMapList.addAll(
+        Arrays.stream(ClubEnum.values())
+            .filter(x -> x.getIdSympla() != null)
+            .map(club -> symplaService.getParties(club, date, maxValue))
+            .reduce(
+                new ArrayList<>(),
+                (list, listAll) -> {
+                  listAll.addAll(list);
+                  return listAll;
+                }));
+
+    return partyMapList.stream()
         .sorted(Comparator.comparing(PartyDTO::getDate))
         .collect(Collectors.toList());
   }

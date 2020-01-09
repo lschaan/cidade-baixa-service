@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public abstract class SymplaService {
+public class SymplaService {
   private static final Logger logger = LoggerFactory.getLogger(SymplaService.class);
 
   private static final String DATE_PATTERN = "yyyy-MM-dd";
@@ -29,7 +29,7 @@ public abstract class SymplaService {
   @Autowired private HtmlService htmlService;
 
   protected List<PartyDTO> getParties(ClubEnum club, LocalDate date, Double maxValue) {
-    logger.info("Getting sympla parties for club {}, date {}, max value {}", club, date, maxValue);
+    logger.info("Getting sympla parties for club {}", club);
     try {
       return htmlService.getUrlListFromSympla(symplaClient.findFromSympla(club.getIdSympla()))
           .stream()
@@ -58,7 +58,6 @@ public abstract class SymplaService {
   }
 
   private List<TicketDTO> getTickets(SymplaDTO symplaDTO, Double maxValue) {
-    logger.info("Getting tickets for {} with max value {}", symplaDTO, maxValue);
     List<TicketDTO> tickets = htmlService.getTicketsFromSympla(symplaDTO.getHtml());
     return maxValue == null
         ? tickets

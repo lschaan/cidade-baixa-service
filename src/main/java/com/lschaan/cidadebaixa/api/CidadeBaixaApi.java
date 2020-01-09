@@ -26,14 +26,14 @@ public class CidadeBaixaApi {
   @GetMapping("/list")
   @ApiOperation(value = "Get parties from cidade-baixa", response = PartyResponse.class)
   public ResponseEntity<?> getParties(
-      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
       @RequestParam(required = false) ClubEnum club,
+      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
       @RequestParam(required = false) Double maxValue) {
     logger.info("Starting api to find party list.");
     logger.info("Date: {}, Club: {}, Max value: {}", date, club, maxValue);
     return ResponseEntity.ok(
         PartyResponse.builder()
-            .content(cidadeBaixaService.getParties(date, club, maxValue))
+            .content(cidadeBaixaService.getParties(club, date, maxValue))
             .build());
   }
 }
