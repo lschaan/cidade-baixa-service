@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum ClubEnum {
-  CUCKO(),
+  CUCKO,
   NUVEM(105574),
   OCIDENTE(1952167);
 
