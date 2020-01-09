@@ -2,14 +2,17 @@ package com.lschaan.cidadebaixa.service;
 
 import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.type.ClubEnum;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CidadeBaixaService {
@@ -45,6 +48,9 @@ public class CidadeBaixaService {
             (list, listAll) -> {
               listAll.addAll(list);
               return listAll;
-            });
+            })
+        .stream()
+        .sorted(Comparator.comparing(PartyDTO::getDate))
+        .collect(Collectors.toList());
   }
 }
