@@ -45,7 +45,6 @@ public class CuckoService implements ClubService {
   }
 
   private List<TicketDTO> createTickets(CuckoResponse response, Double maxValue) {
-    logger.info("Creating tickets details from cucko {} with max value {}", response, maxValue);
     List<TicketDTO> tickets = new ArrayList<>();
 
     tickets.add(

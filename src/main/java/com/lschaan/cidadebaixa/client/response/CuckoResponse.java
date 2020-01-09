@@ -11,7 +11,7 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString (exclude = "message")
+@ToString(exclude = "message")
 public class CuckoResponse {
   private String date;
   private String name;

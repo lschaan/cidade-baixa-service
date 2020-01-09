@@ -1,7 +1,6 @@
 package com.lschaan.cidadebaixa.client;
 
 import com.lschaan.cidadebaixa.helper.Constants;
-import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+
+import java.net.URI;
 
 @Service
 public class SymplaClient {
@@ -30,7 +31,6 @@ public class SymplaClient {
   }
 
   public String findDetailsFromSympla(String url) {
-    logger.info("Requesting html from {} via sympla client", url);
     return client.findDetailsFromSympla(
         URI.create(url),
         Constants.DEFAULT_REQUESTED_WITH,

@@ -36,7 +36,6 @@ public class HtmlService {
   private static final String URL = "http://schema.org/url";
 
   public List<String> getUrlListFromSympla(String html) {
-    logger.info("Getting party list from sympla html");
     return parse(html).body().getElementsByClass("event-box event-box-245xs-290lg sympla-card")
         .stream()
         .map(x -> x.getElementsByClass("event-box-link").attr("href"))
@@ -44,7 +43,6 @@ public class HtmlService {
   }
 
   public SymplaDTO getPartyFromSympla(String html) {
-    logger.info("Getting party details from sympla html");
     try {
       Object json =
           JsonUtils.fromString(
@@ -64,7 +62,6 @@ public class HtmlService {
   }
 
   public List<TicketDTO> getTicketsFromSympla(String html) {
-    logger.info("Getting tickets details from sympla html");
     return Jsoup.parse(html).getElementById("ticket-form").getElementsByTag("td").not(".opt-panel")
         .stream()
         .map(
