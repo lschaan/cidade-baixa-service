@@ -82,16 +82,13 @@ public class HtmlService {
   }
 
   private LocalDate getDueDate(String dueDateStr) {
-    LocalDate dueDate;
     try {
-      dueDate =
-          LocalDate.parse(
-              dueDateStr.substring(DATE_START_INDEX, DATE_END_INDEX),
-              DateTimeFormatter.ofPattern(Constants.BR_DATE_PATTERN));
+      return LocalDate.parse(
+          dueDateStr.substring(DATE_START_INDEX, DATE_END_INDEX),
+          DateTimeFormatter.ofPattern(Constants.BR_DATE_PATTERN));
     } catch (Exception e) {
       logger.info("Unable to get date from {}, returning today's date.", dueDateStr);
-      dueDate = LocalDate.now();
+      return LocalDate.now();
     }
-    return dueDate;
   }
 }
