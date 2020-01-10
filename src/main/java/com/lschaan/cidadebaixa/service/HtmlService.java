@@ -68,10 +68,7 @@ public class HtmlService {
             x -> {
               List<String> elements = x.getElementsByTag("span").eachText();
               return TicketDTO.builder()
-                  .dueDate(
-                      LocalDate.parse(
-                          elements.get(DATE_INDEX).substring(DATE_START_INDEX, DATE_END_INDEX),
-                          DateTimeFormatter.ofPattern(Constants.BR_DATE_PATTERN)))
+                  .dueDate(getDueDate(elements.get(DATE_INDEX)))
                   .price(
                       Double.valueOf(
                           elements
@@ -82,5 +79,19 @@ public class HtmlService {
                   .build();
             })
         .collect(Collectors.toList());
+  }
+
+  private LocalDate getDueDate(String dueDateStr) {
+    LocalDate dueDate;
+    try {
+      dueDate =
+          LocalDate.parse(
+              dueDateStr.substring(DATE_START_INDEX, DATE_END_INDEX),
+              DateTimeFormatter.ofPattern(Constants.BR_DATE_PATTERN));
+    } catch (Exception e) {
+      logger.info("Unable to get date from {}, returning today's date.", dueDateStr);
+      dueDate = LocalDate.now();
+    }
+    return dueDate;
   }
 }
