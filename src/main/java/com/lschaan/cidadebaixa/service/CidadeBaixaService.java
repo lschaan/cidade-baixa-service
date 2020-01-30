@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -55,12 +55,8 @@ public class CidadeBaixaService {
     logger.info("Getting parties from partyMap {}", partyMap.keySet());
     return partyMap.values().stream()
         .map(partyService -> partyService.getParties(date, maxValue))
-        .reduce(
-            new ArrayList<>(),
-            (list, listAll) -> {
-              listAll.addAll(list);
-              return listAll;
-            });
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
   private List<PartyDTO> getAllSymplaParties(LocalDate date, Double maxValue) {
@@ -68,11 +64,7 @@ public class CidadeBaixaService {
     return Arrays.stream(ClubEnum.values())
         .filter(x -> x.getIdSympla() != null)
         .map(club -> symplaService.getParties(club, date, maxValue))
-        .reduce(
-            new ArrayList<>(),
-            (list, listAll) -> {
-              listAll.addAll(list);
-              return listAll;
-            });
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 }
