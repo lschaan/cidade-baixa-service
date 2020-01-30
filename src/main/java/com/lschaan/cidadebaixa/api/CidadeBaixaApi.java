@@ -4,6 +4,7 @@ import com.lschaan.cidadebaixa.api.response.PartyResponse;
 import com.lschaan.cidadebaixa.service.CidadeBaixaService;
 import com.lschaan.cidadebaixa.type.ClubEnum;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class CidadeBaixaApi {
   @ApiOperation(value = "Get parties from cidade-baixa", response = PartyResponse.class)
   public ResponseEntity<?> getParties(
       @RequestParam(required = false) ClubEnum club,
-      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+      @RequestParam(required = false) @ApiParam(value = "yyyy-MM-dd") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
       @RequestParam(required = false) Double maxValue) {
     logger.info("Starting api to find party list.");
     logger.info("Date: {}, Club: {}, Max value: {}", date, club, maxValue);
