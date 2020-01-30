@@ -20,7 +20,7 @@ public class CuckoClient {
 
   public List<CuckoResponse> getAll() {
     logger.info("Sending feign request to cucko-api for next events");
-    return client.getAll(Constants.DEFAULT_USER_AGENT);
+    return client.getAll(Constants.USER_AGENT_HEADER);
   }
 
   @FeignClient(name = "cucko-service", url = Constants.CUCKO_URL)

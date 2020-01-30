@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_TIME_FORMAT;
+
 @Service
 public class CuckoService implements ClubService {
   private static final Logger logger = LoggerFactory.getLogger(CuckoService.class);
-
-  private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
   @Autowired private CuckoClient cuckoClient;
 
@@ -34,7 +34,8 @@ public class CuckoService implements ClubService {
                 PartyDTO.builder()
                     .partyName(party.getName())
                     .date(
-                        LocalDate.parse(party.getDate(), DateTimeFormatter.ofPattern(DATE_PATTERN)))
+                        LocalDate.parse(
+                            party.getDate(), DateTimeFormatter.ofPattern(ISO_DATE_TIME_FORMAT)))
                     .openBar(party.getMessage().contains("OPEN"))
                     .tickets(createTickets(party, maxValue))
                     .club(ClubEnum.CUCKO)

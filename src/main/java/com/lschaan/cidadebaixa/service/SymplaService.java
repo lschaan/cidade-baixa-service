@@ -16,11 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_FORMAT;
+
 @Service
 public class SymplaService {
   private static final Logger logger = LoggerFactory.getLogger(SymplaService.class);
 
-  private static final String DATE_PATTERN = "yyyy-MM-dd";
   private static final Integer DATE_START_INDEX = 0;
   private static final Integer DATE_END_INDEX = 10;
 
@@ -43,7 +44,7 @@ public class SymplaService {
                     .date(
                         LocalDate.parse(
                             symplaDTO.getStartDate().substring(DATE_START_INDEX, DATE_END_INDEX),
-                            DateTimeFormatter.ofPattern(DATE_PATTERN)))
+                            DateTimeFormatter.ofPattern(ISO_DATE_FORMAT)))
                     .openBar(symplaDTO.getDescription().contains("OPEN"))
                     .tickets(getTickets(symplaDTO, maxValue))
                     .build();

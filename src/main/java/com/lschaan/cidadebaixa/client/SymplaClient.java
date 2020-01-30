@@ -24,8 +24,8 @@ public class SymplaClient {
     logger.info("Sending request for sympla informations for id {}", id);
     String idString = "id=" + id;
     return client.findFromSympla(
-        Constants.DEFAULT_REQUESTED_WITH,
-        Constants.DEFAULT_USER_AGENT,
+        Constants.REQUESTED_WITH_HEADER,
+        Constants.USER_AGENT_HEADER,
         MediaType.APPLICATION_FORM_URLENCODED_VALUE,
         idString);
   }
@@ -34,8 +34,8 @@ public class SymplaClient {
     logger.info("Getting details from {} ", url);
     return client.findDetailsFromSympla(
         URI.create(url),
-        Constants.DEFAULT_REQUESTED_WITH,
-        Constants.DEFAULT_USER_AGENT,
+        Constants.REQUESTED_WITH_HEADER,
+        Constants.USER_AGENT_HEADER,
         MediaType.APPLICATION_FORM_URLENCODED_VALUE);
   }
 
