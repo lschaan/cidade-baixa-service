@@ -29,38 +29,48 @@ public class CuckoService implements ClubService {
   public List<PartyDTO> getParties(LocalDate date, Double maxValue) {
     logger.info("Getting party list from cucko service, date: {}, maxValue: {}", date, maxValue);
     return cuckoClient.getAll().stream()
-        .map(
-            party ->
-                PartyDTO.builder()
-                    .partyName(party.getName())
-                    .date(
-                        LocalDate.parse(
-                            party.getDate(), DateTimeFormatter.ofPattern(ISO_DATE_TIME_FORMAT)))
-                    .openBar(party.getMessage().contains("OPEN"))
-                    .tickets(createTickets(party, maxValue))
-                    .club(ClubEnum.CUCKO)
-                    .build())
-        .filter(x -> date == null || x.getDate().isEqual(date))
-        .filter(x -> !x.getTickets().isEmpty())
+        .map(response -> createParty(response, maxValue))
+        .filter(party -> date == null || party.getDate().isEqual(date))
+        .filter(party -> !party.getTickets().isEmpty())
         .collect(Collectors.toList());
   }
 
-  private List<TicketDTO> createTickets(CuckoResponse response, Double maxValue) {
-    List<TicketDTO> tickets = new ArrayList<>();
+  private PartyDTO createParty(CuckoResponse response, Double maxValue) {
+    LocalDate date = getDate(response);
 
+    return PartyDTO.builder()
+        .partyName(response.getName())
+        .date(date)
+        .openBar(response.getMessage().contains("OPEN"))
+        .tickets(createTickets(response, date, maxValue))
+        .club(ClubEnum.CUCKO)
+        .build();
+  }
+
+  private List<TicketDTO> createTickets(CuckoResponse response, LocalDate date, Double maxValue) {
+    List<TicketDTO> tickets = new ArrayList<>();
     tickets.add(
         TicketDTO.builder()
             .price(response.getPriceInAdvance())
             .type(TicketEnum.IN_ADVANCE)
+            .dueDate(date)
             .build());
 
     tickets.add(
-        TicketDTO.builder().price(response.getPriceOnSite()).type(TicketEnum.ON_SITE).build());
+        TicketDTO.builder()
+            .price(response.getPriceOnSite())
+            .type(TicketEnum.ON_SITE)
+            .dueDate(date)
+            .build());
 
     return maxValue == null
         ? tickets
         : tickets.stream()
             .filter(ticket -> ticket.getPrice() <= maxValue)
             .collect(Collectors.toList());
+  }
+
+  private LocalDate getDate(CuckoResponse party) {
+    return LocalDate.parse(party.getDate(), DateTimeFormatter.ofPattern(ISO_DATE_TIME_FORMAT));
   }
 }
