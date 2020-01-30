@@ -31,6 +31,7 @@ public class SymplaClient {
   }
 
   public String findDetailsFromSympla(String url) {
+    logger.info("Getting details from {} ", url);
     return client.findDetailsFromSympla(
         URI.create(url),
         Constants.DEFAULT_REQUESTED_WITH,
