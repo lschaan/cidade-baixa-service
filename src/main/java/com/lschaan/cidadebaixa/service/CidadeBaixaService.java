@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @Service
 public class CidadeBaixaService {
   private static final Logger logger = LoggerFactory.getLogger(CidadeBaixaService.class);
-
   private static final Map<ClubEnum, ClubService> partyMap = new HashMap<>();
 
   @Autowired private SymplaService symplaService;
@@ -44,32 +43,36 @@ public class CidadeBaixaService {
 
   private List<PartyDTO> getAllParties(LocalDate date, Double maxValue) {
     logger.info("No club filters found, searching for all club parties");
+    List<PartyDTO> partyList = getAllPartyMapParties(date, maxValue);
+    partyList.addAll(getAllSymplaParties(date, maxValue));
 
-    logger.info("Getting parties from partyMap {}", partyMap.keySet());
-    List<PartyDTO> partyMapList =
-        partyMap.values().stream()
-            .map(partyService -> partyService.getParties(date, maxValue))
-            .reduce(
-                new ArrayList<>(),
-                (list, listAll) -> {
-                  listAll.addAll(list);
-                  return listAll;
-                });
-
-    logger.info("Getting parties from clubs listed in sympla");
-    partyMapList.addAll(
-        Arrays.stream(ClubEnum.values())
-            .filter(x -> x.getIdSympla() != null)
-            .map(club -> symplaService.getParties(club, date, maxValue))
-            .reduce(
-                new ArrayList<>(),
-                (list, listAll) -> {
-                  listAll.addAll(list);
-                  return listAll;
-                }));
-
-    return partyMapList.stream()
+    return partyList.stream()
         .sorted(Comparator.comparing(PartyDTO::getDate))
         .collect(Collectors.toList());
+  }
+
+  private List<PartyDTO> getAllPartyMapParties(LocalDate date, Double maxValue) {
+    logger.info("Getting parties from partyMap {}", partyMap.keySet());
+    return partyMap.values().stream()
+        .map(partyService -> partyService.getParties(date, maxValue))
+        .reduce(
+            new ArrayList<>(),
+            (list, listAll) -> {
+              listAll.addAll(list);
+              return listAll;
+            });
+  }
+
+  private List<PartyDTO> getAllSymplaParties(LocalDate date, Double maxValue) {
+    logger.info("Getting parties from clubs listed in sympla");
+    return Arrays.stream(ClubEnum.values())
+        .filter(x -> x.getIdSympla() != null)
+        .map(club -> symplaService.getParties(club, date, maxValue))
+        .reduce(
+            new ArrayList<>(),
+            (list, listAll) -> {
+              listAll.addAll(list);
+              return listAll;
+            });
   }
 }
