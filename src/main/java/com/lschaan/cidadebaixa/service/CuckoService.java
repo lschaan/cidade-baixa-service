@@ -6,6 +6,7 @@ import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.type.ClubEnum;
 import com.lschaan.cidadebaixa.type.TicketEnum;
+import com.lschaan.cidadebaixa.validator.PartyValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_TIME_FORMAT;
+import static com.lschaan.cidadebaixa.validator.PartyValidator.isOnDate;
 
 @Service
 public class CuckoService implements ClubService {
@@ -30,8 +32,8 @@ public class CuckoService implements ClubService {
     logger.info("Getting party list from cucko service, date: {}, maxValue: {}", date, maxValue);
     return cuckoClient.getAll().stream()
         .map(response -> createParty(response, maxValue))
-        .filter(party -> date == null || party.getDate().isEqual(date))
-        .filter(party -> !party.getTickets().isEmpty())
+        .filter(party -> isOnDate(party, date))
+        .filter(PartyValidator::hasTickets)
         .collect(Collectors.toList());
   }
 
