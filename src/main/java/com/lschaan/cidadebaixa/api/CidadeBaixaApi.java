@@ -30,7 +30,10 @@ public class CidadeBaixaApi {
   @ApiOperation(value = "Get parties from cidade-baixa", response = PartyResponse.class)
   public ResponseEntity<?> getParties(
       @RequestParam(required = false) ClubEnum club,
-      @RequestParam(required = false) @ApiParam(value = ISO_DATE_FORMAT) @DateTimeFormat(pattern = ISO_DATE_FORMAT) LocalDate date,
+      @RequestParam(required = false)
+          @ApiParam(value = ISO_DATE_FORMAT)
+          @DateTimeFormat(pattern = ISO_DATE_FORMAT)
+          LocalDate date,
       @RequestParam(required = false) Double maxValue) {
     logger.info("Starting api to find party list.");
     logger.info("Date: {}, Club: {}, Max value: {}", date, club, maxValue);
