@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_TIME_FORMAT;
 import static com.lschaan.cidadebaixa.validator.PartyValidator.isOnDate;
+import static com.lschaan.cidadebaixa.validator.TicketValidator.isOnPriceRange;
 
 @Service
 public class CuckoService implements ClubService {
@@ -65,11 +66,8 @@ public class CuckoService implements ClubService {
             .dueDate(date)
             .build());
 
-    return maxValue == null
-        ? tickets
-        : tickets.stream()
-            .filter(ticket -> ticket.getPrice() <= maxValue)
-            .collect(Collectors.toList());
+    tickets.removeIf(ticket -> !isOnPriceRange(ticket, maxValue));
+    return tickets;
   }
 
   private LocalDate getDate(CuckoResponse party) {
