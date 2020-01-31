@@ -29,42 +29,22 @@ public class CidadeBaixaService {
 
   public List<PartyDTO> getParties(ClubEnum club, LocalDate date, Double maxValue) {
     logger.info(
-        "Started main service to get party list. date: {}, club: {}, max value: {}",
-        date,
-        club,
-        maxValue);
-
-    return club == null
-        ? getAllParties(date, maxValue)
-        : club.getIdSympla() == null
-            ? partyMap.get(club).getParties(date, maxValue)
-            : symplaService.getParties(club, date, maxValue);
+        "Started service to get parties. date: {}, club: {}, max value: {}", date, club, maxValue);
+    return club == null ? getAllParties(date, maxValue) : getPartiesFromClub(club, date, maxValue);
   }
 
   private List<PartyDTO> getAllParties(LocalDate date, Double maxValue) {
     logger.info("No club filters found, searching for all club parties");
-    List<PartyDTO> partyList = getAllPartyMapParties(date, maxValue);
-    partyList.addAll(getAllSymplaParties(date, maxValue));
-
-    return partyList.stream()
+    return Arrays.stream(ClubEnum.values())
+        .map(club -> getPartiesFromClub(club, date, maxValue))
+        .flatMap(Collection::stream)
         .sorted(Comparator.comparing(PartyDTO::getDate))
         .collect(Collectors.toList());
   }
 
-  private List<PartyDTO> getAllPartyMapParties(LocalDate date, Double maxValue) {
-    logger.info("Getting parties from partyMap {}", partyMap.keySet());
-    return partyMap.values().stream()
-        .map(partyService -> partyService.getParties(date, maxValue))
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
-  }
-
-  private List<PartyDTO> getAllSymplaParties(LocalDate date, Double maxValue) {
-    logger.info("Getting parties from clubs listed in sympla");
-    return Arrays.stream(ClubEnum.values())
-        .filter(x -> x.getIdSympla() != null)
-        .map(club -> symplaService.getParties(club, date, maxValue))
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+  private List<PartyDTO> getPartiesFromClub(ClubEnum club, LocalDate date, Double maxValue) {
+    return club.getIdSympla() == null
+        ? partyMap.get(club).getParties(date, maxValue)
+        : symplaService.getParties(club, date, maxValue);
   }
 }
