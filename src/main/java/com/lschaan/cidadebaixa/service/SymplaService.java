@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_FORMAT;
 import static com.lschaan.cidadebaixa.validator.PartyValidator.isOnDate;
+import static com.lschaan.cidadebaixa.validator.TicketValidator.isOnPriceRange;
 
 @Service
 public class SymplaService {
@@ -59,11 +60,8 @@ public class SymplaService {
 
   private List<TicketDTO> getTickets(SymplaDTO symplaDTO, Double maxValue) {
     List<TicketDTO> tickets = htmlService.getTicketsFromSympla(symplaDTO.getHtml());
-    return maxValue == null
-        ? tickets
-        : tickets.stream()
-            .filter(ticket -> ticket.getPrice() <= maxValue)
-            .collect(Collectors.toList());
+    tickets.removeIf(ticket -> !isOnPriceRange(ticket, maxValue));
+    return tickets;
   }
 
   private LocalDate getDate(SymplaDTO symplaDTO) {
