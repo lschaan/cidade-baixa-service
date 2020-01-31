@@ -43,10 +43,7 @@ public class SymplaService {
                 return PartyDTO.builder()
                     .partyName(symplaDTO.getName())
                     .club(club)
-                    .date(
-                        LocalDate.parse(
-                            symplaDTO.getStartDate().substring(DATE_START_INDEX, DATE_END_INDEX),
-                            DateTimeFormatter.ofPattern(ISO_DATE_FORMAT)))
+                    .date(getDate(symplaDTO))
                     .openBar(symplaDTO.getDescription().contains("OPEN"))
                     .tickets(getTickets(symplaDTO, maxValue))
                     .build();
@@ -67,5 +64,11 @@ public class SymplaService {
         : tickets.stream()
             .filter(ticket -> ticket.getPrice() <= maxValue)
             .collect(Collectors.toList());
+  }
+
+  private LocalDate getDate(SymplaDTO symplaDTO) {
+    return LocalDate.parse(
+        symplaDTO.getStartDate().substring(DATE_START_INDEX, DATE_END_INDEX),
+        DateTimeFormatter.ofPattern(ISO_DATE_FORMAT));
   }
 }
