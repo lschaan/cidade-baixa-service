@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static com.lschaan.cidadebaixa.validator.PartyValidator.isOnDate;
 import static com.lschaan.cidadebaixa.validator.TicketValidator.isOnPriceRange;
 
-@Service
+@Service("MARGOT")
 public class MargotService implements ClubService {
   private static final Logger logger = LoggerFactory.getLogger(MargotService.class);
 

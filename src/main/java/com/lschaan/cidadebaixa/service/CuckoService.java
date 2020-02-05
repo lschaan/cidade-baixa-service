@@ -22,7 +22,7 @@ import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_TIME_FORMAT;
 import static com.lschaan.cidadebaixa.validator.PartyValidator.isOnDate;
 import static com.lschaan.cidadebaixa.validator.TicketValidator.isOnPriceRange;
 
-@Service
+@Service("CUCKO")
 public class CuckoService implements ClubService {
   private static final Logger logger = LoggerFactory.getLogger(CuckoService.class);
 
