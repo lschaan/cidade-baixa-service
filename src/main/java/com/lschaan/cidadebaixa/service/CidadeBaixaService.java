@@ -23,8 +23,9 @@ public class CidadeBaixaService {
 
   @Autowired private SymplaService symplaService;
 
-  public CidadeBaixaService(CuckoService cuckoService) {
+  public CidadeBaixaService(CuckoService cuckoService, MargotService margotService) {
     partyMap.put(ClubEnum.CUCKO, cuckoService);
+    partyMap.put(ClubEnum.MARGOT, margotService);
   }
 
   public List<PartyDTO> getParties(ClubEnum club, LocalDate date, Double maxValue) {

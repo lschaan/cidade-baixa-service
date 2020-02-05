@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 public enum ClubEnum {
   CUCKO,
   NUVEM(105574),
-  OCIDENTE(1952167);
+  OCIDENTE(1952167),
+  MARGOT;
 
   private Integer idSympla;
 }
