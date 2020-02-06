@@ -20,6 +20,15 @@ public class PartyDTOStub {
         mockPartyDto(CUCKO, date), mockPartyDto(NUVEM, date), mockPartyDto(MARGOT, date));
   }
 
+  public static List<PartyDTO> mockPartyList(ClubEnum club, LocalDate today, LocalDate tomorrow) {
+    return Arrays.asList(mockPartyDto(club, today), mockPartyDto(club, tomorrow));
+  }
+
+  public static List<PartyDTO> mockSingletonPartyListWithSingleTicket(
+      ClubEnum club, LocalDate date, Double price) {
+    return Collections.singletonList(mockPartyDtoWithSingleTicket(club, date, price));
+  }
+
   public static List<PartyDTO> mockSingletonPartyList(ClubEnum club, LocalDate date) {
     return Collections.singletonList(mockPartyDto(club, date));
   }
