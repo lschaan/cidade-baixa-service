@@ -52,7 +52,7 @@ public class CuckoService implements ClubService {
   private List<TicketDTO> createTickets(CuckoResponse response, LocalDate date, Double maxValue) {
     return Stream.of(
             TicketDTO.builder().price(response.getPriceInAdvance()).dueDate(date).build(),
-            TicketDTO.builder().price(response.getPriceInAdvance()).dueDate(date).build())
+            TicketDTO.builder().price(response.getPriceOnSite()).dueDate(date).build())
         .filter(ticket -> isOnPriceRange(ticket, maxValue))
         .collect(Collectors.toList());
   }
