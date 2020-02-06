@@ -3,9 +3,7 @@ package com.lschaan.cidadebaixa.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lschaan.cidadebaixa.api.response.PartyResponse;
 import com.lschaan.cidadebaixa.dto.PartyDTO;
-import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.service.CidadeBaixaService;
-import com.lschaan.cidadebaixa.type.ClubEnum;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyDto;
+import static com.lschaan.cidadebaixa.type.ClubEnum.CUCKO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,7 +55,7 @@ public class CidadeBaixaApiTest {
 
   @Test
   public void shouldReturnOK_whenGivenOnlyClubName() throws Exception {
-    mockMvc.perform(get(URL).param("club", ClubEnum.CUCKO.toString())).andExpect(status().isOk());
+    mockMvc.perform(get(URL).param("club", CUCKO.toString())).andExpect(status().isOk());
   }
 
   @Test
@@ -71,17 +71,14 @@ public class CidadeBaixaApiTest {
   @Test
   public void shouldReturnOK_whenGivenClubNameAndDate() throws Exception {
     mockMvc
-        .perform(get(URL).param("club", ClubEnum.CUCKO.toString()).param("date", date.toString()))
+        .perform(get(URL).param("club", CUCKO.toString()).param("date", date.toString()))
         .andExpect(status().isOk());
   }
 
   @Test
   public void shouldReturnOK_whenGivenClubNameAndMaxValue() throws Exception {
     mockMvc
-        .perform(
-            get(URL)
-                .param("club", ClubEnum.CUCKO.toString())
-                .param("maxValue", String.valueOf(10.5)))
+        .perform(get(URL).param("club", CUCKO.toString()).param("maxValue", String.valueOf(10.5)))
         .andExpect(status().isOk());
   }
 
@@ -97,7 +94,7 @@ public class CidadeBaixaApiTest {
     mockMvc
         .perform(
             get(URL)
-                .param("club", ClubEnum.CUCKO.toString())
+                .param("club", CUCKO.toString())
                 .param("date", date.toString())
                 .param("maxValue", String.valueOf(10.5)))
         .andExpect(status().isOk());
@@ -106,27 +103,27 @@ public class CidadeBaixaApiTest {
   @Test
   public void shouldReturnPartyResponse() throws Exception {
     when(cidadeBaixaService.getParties(any(), any(), any()))
-        .thenReturn(Collections.singletonList(mockPartyDto()));
-    String expected =
+        .thenReturn(Collections.singletonList(mockPartyDto(CUCKO, date)));
+    String actual =
         mockMvc
             .perform(get(URL))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
-    Assert.assertEquals(expected, objectMapper.writeValueAsString(mockPartyResponse()));
+    Assert.assertEquals(objectMapper.writeValueAsString(mockPartyResponse()), actual);
   }
 
-  public void shouldReturnEmptyPartyResponse() throws Exception {
+  public void shouldReturnEmptyPartyResponse_whenPartyListIsEmpty() throws Exception {
     when(cidadeBaixaService.getParties(any(), any(), any())).thenReturn(mockEmptyPartyList());
-    String expected =
+    String actual =
         mockMvc
             .perform(get(URL))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
-    Assert.assertEquals(expected, mockEmptyPartyResponse().toString());
+    Assert.assertEquals(mockEmptyPartyResponse().toString(), actual);
   }
 
   private List<PartyDTO> mockEmptyPartyList() {
@@ -137,20 +134,7 @@ public class CidadeBaixaApiTest {
     return new PartyResponse(new ArrayList<>());
   }
 
-  private TicketDTO mockTicketDto() {
-    return TicketDTO.builder().dueDate(date).price(10.5).build();
-  }
-
-  private PartyDTO mockPartyDto() {
-    return PartyDTO.builder()
-        .partyName("Party")
-        .date(date)
-        .openBar(false)
-        .tickets(Collections.singletonList(mockTicketDto()))
-        .build();
-  }
-
   private PartyResponse mockPartyResponse() {
-    return new PartyResponse(Collections.singletonList(mockPartyDto()));
+    return new PartyResponse(Collections.singletonList(mockPartyDto(CUCKO, date)));
   }
 }
