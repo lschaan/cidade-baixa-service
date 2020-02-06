@@ -20,6 +20,5 @@ public class PartyDTO {
   private LocalDate date;
   private Boolean openBar;
   private List<TicketDTO> tickets;
-  private String message;
   private ClubEnum club;
 }
