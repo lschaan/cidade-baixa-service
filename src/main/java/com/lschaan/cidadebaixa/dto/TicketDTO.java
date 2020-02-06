@@ -1,6 +1,5 @@
 package com.lschaan.cidadebaixa.dto;
 
-import com.lschaan.cidadebaixa.type.TicketEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +15,5 @@ import java.time.LocalDate;
 @Builder
 public class TicketDTO {
   private Double price;
-  private TicketEnum type;
   private LocalDate dueDate;
 }

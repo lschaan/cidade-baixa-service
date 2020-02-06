@@ -5,7 +5,6 @@ import com.lschaan.cidadebaixa.client.response.MargotPartyResponse;
 import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.type.ClubEnum;
-import com.lschaan.cidadebaixa.type.TicketEnum;
 import com.lschaan.cidadebaixa.validator.PartyValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,15 +50,8 @@ public class MargotService implements ClubService {
 
   private List<TicketDTO> getTickets(
       MargotPartyResponse response, LocalDate date, Double maxValue) {
-
     return response.getTickets().stream()
-        .map(
-            ticket ->
-                TicketDTO.builder()
-                    .price(ticket.getPrice())
-                    .dueDate(date)
-                    .type(TicketEnum.IN_ADVANCE)
-                    .build())
+        .map(ticket -> TicketDTO.builder().price(ticket.getPrice()).dueDate(date).build())
         .filter(ticket -> isOnPriceRange(ticket, maxValue))
         .collect(Collectors.toList());
   }

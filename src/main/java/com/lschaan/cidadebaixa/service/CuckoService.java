@@ -5,7 +5,6 @@ import com.lschaan.cidadebaixa.client.response.CuckoResponse;
 import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.type.ClubEnum;
-import com.lschaan.cidadebaixa.type.TicketEnum;
 import com.lschaan.cidadebaixa.validator.PartyValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_TIME_FORMAT;
 import static com.lschaan.cidadebaixa.validator.PartyValidator.isOnDate;
@@ -51,23 +50,11 @@ public class CuckoService implements ClubService {
   }
 
   private List<TicketDTO> createTickets(CuckoResponse response, LocalDate date, Double maxValue) {
-    List<TicketDTO> tickets = new ArrayList<>();
-    tickets.add(
-        TicketDTO.builder()
-            .price(response.getPriceInAdvance())
-            .type(TicketEnum.IN_ADVANCE)
-            .dueDate(date)
-            .build());
-
-    tickets.add(
-        TicketDTO.builder()
-            .price(response.getPriceOnSite())
-            .type(TicketEnum.ON_SITE)
-            .dueDate(date)
-            .build());
-
-    tickets.removeIf(ticket -> !isOnPriceRange(ticket, maxValue));
-    return tickets;
+    return Stream.of(
+            TicketDTO.builder().price(response.getPriceInAdvance()).dueDate(date).build(),
+            TicketDTO.builder().price(response.getPriceInAdvance()).dueDate(date).build())
+        .filter(ticket -> isOnPriceRange(ticket, maxValue))
+        .collect(Collectors.toList());
   }
 
   private LocalDate getDate(CuckoResponse party) {

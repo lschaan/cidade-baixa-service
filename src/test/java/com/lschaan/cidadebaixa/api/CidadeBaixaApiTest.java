@@ -6,7 +6,6 @@ import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.service.CidadeBaixaService;
 import com.lschaan.cidadebaixa.type.ClubEnum;
-import com.lschaan.cidadebaixa.type.TicketEnum;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,7 +138,7 @@ public class CidadeBaixaApiTest {
   }
 
   private TicketDTO mockTicketDto() {
-    return TicketDTO.builder().dueDate(date).price(10.5).type(TicketEnum.ON_SITE).build();
+    return TicketDTO.builder().dueDate(date).price(10.5).build();
   }
 
   private PartyDTO mockPartyDto() {
