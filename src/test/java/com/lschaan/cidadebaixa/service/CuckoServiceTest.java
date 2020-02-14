@@ -92,10 +92,11 @@ public class CuckoServiceTest {
 
   private CuckoResponse mockCuckoResponse(LocalDate date) {
     return CuckoResponse.builder()
+        .name("party")
         .date(date.atStartOfDay().format(DateTimeFormatter.ofPattern(ISO_DATE_TIME_FORMAT)))
         .priceInAdvance(10.0)
         .priceOnSite(20.0)
-        .message("")
+        .message("description")
         .build();
   }
 }

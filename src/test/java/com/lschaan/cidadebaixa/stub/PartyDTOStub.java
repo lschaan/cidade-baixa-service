@@ -42,6 +42,7 @@ public class PartyDTOStub {
 
   public static PartyDTO mockPartyDto(ClubEnum club, LocalDate date) {
     return PartyDTO.builder()
+        .partyName("party")
         .date(date)
         .club(club)
         .tickets(mockTicketList(date, 10.0, 20.0))
@@ -51,6 +52,7 @@ public class PartyDTOStub {
 
   public static PartyDTO mockPartyDtoWithSingleTicket(ClubEnum club, LocalDate date, Double price) {
     return PartyDTO.builder()
+        .partyName("party")
         .date(date)
         .club(club)
         .tickets(mockSingletonTicketList(price, date))
