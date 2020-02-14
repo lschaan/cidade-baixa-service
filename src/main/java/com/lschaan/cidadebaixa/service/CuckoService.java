@@ -43,7 +43,7 @@ public class CuckoService implements ClubService {
     return PartyDTO.builder()
         .partyName(response.getName())
         .date(date)
-        .openBar(response.getMessage().contains("OPEN"))
+        .openBar(response.getName().contains("OPEN"))
         .tickets(createTickets(response, date, maxValue))
         .club(ClubEnum.CUCKO)
         .build();

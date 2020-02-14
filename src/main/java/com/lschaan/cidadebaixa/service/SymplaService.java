@@ -45,7 +45,7 @@ public class SymplaService {
                     .partyName(symplaDTO.getName())
                     .club(club)
                     .date(getDate(symplaDTO))
-                    .openBar(symplaDTO.getDescription().contains("OPEN"))
+                    .openBar(symplaDTO.getName().contains("OPEN"))
                     .tickets(getTickets(symplaDTO, maxValue))
                     .build();
               })

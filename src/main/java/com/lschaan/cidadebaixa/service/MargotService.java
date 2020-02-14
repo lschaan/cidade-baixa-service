@@ -42,7 +42,7 @@ public class MargotService implements ClubService {
     return PartyDTO.builder()
         .club(ClubEnum.MARGOT)
         .date(date)
-        .openBar(response.getMessage().contains("OPEN"))
+        .openBar(response.getName().contains("OPEN"))
         .partyName(response.getName())
         .tickets(getTickets(response, date, maxValue))
         .build();
