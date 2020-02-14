@@ -1,5 +1,6 @@
 package com.lschaan.cidadebaixa.service;
 
+import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
@@ -7,10 +8,12 @@ import com.lschaan.cidadebaixa.dto.SymplaDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.helper.Constants;
 import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -35,24 +38,21 @@ public class HtmlService {
   private static final String OFFERS = "http://schema.org/offers";
   private static final String URL = "http://schema.org/url";
 
-  public List<String> getUrlListFromSympla(String html) {
+  public List<String> extractUrlListFromSymplaHtml(String html) {
     return parse(html).body().getElementsByClass("event-box event-box-245xs-290lg sympla-card")
         .stream()
         .map(x -> x.getElementsByClass("event-box-link").attr("href"))
         .collect(Collectors.toList());
   }
 
-  public SymplaDTO getPartyFromSympla(String html) {
+  public SymplaDTO extractSymplaPartyFromHtml(String html) {
     try {
-      Object json =
-          JsonUtils.fromString(
-              Jsoup.parse(html).tagName("script").select("[type=application/ld+json]").html());
-      Map jsonMap = JsonLdProcessor.compact(json, new HashMap<>(), new JsonLdOptions());
+      Map<String, Object> jsonMap = getJsonMap(html);
       return SymplaDTO.builder()
-          .description((String) jsonMap.get(DESCRIPTION))
-          .name((String) jsonMap.get(NAME))
-          .startDate((String) ((Map) jsonMap.get(START_DATE)).get("@value"))
-          .detailsUrl((String) ((Map) ((Map) jsonMap.get(OFFERS)).get(URL)).get("@id"))
+          .description(getDescription(jsonMap))
+          .name(getName(jsonMap))
+          .startDate(getStartDate(jsonMap))
+          .detailsUrl(getDetailsUrl(jsonMap))
           .html(html)
           .build();
     } catch (Exception e) {
@@ -61,24 +61,49 @@ public class HtmlService {
     }
   }
 
-  public List<TicketDTO> getTicketsFromSympla(String html) {
-    return Jsoup.parse(html).getElementById("ticket-form").getElementsByTag("td").not(".opt-panel")
-        .stream()
+  public List<TicketDTO> extractTicketListFromSymplaHtml(String html) {
+    return getTicketListElements(html).stream()
         .map(
-            x -> {
-              List<String> elements = x.getElementsByTag("span").eachText();
+            element -> {
+              List<String> elements = element.getElementsByTag("span").eachText();
               return TicketDTO.builder()
                   .dueDate(getDueDate(elements.get(DATE_INDEX)))
-                  .price(
-                      Double.valueOf(
-                          elements
-                              .get(PRICE_INDEX)
-                              .replace(" ", "")
-                              .replace("R$", "")
-                              .replace(",", ".")))
+                  .price(getPrice(elements.get(PRICE_INDEX)))
                   .build();
             })
         .collect(Collectors.toList());
+  }
+
+  private Map<String, Object> getJsonMap(String html) throws IOException, JsonLdError {
+    Object json =
+        JsonUtils.fromString(
+            Jsoup.parse(html).tagName("script").select("[type=application/ld+json]").html());
+    return JsonLdProcessor.compact(json, new HashMap<>(), new JsonLdOptions());
+  }
+
+  private String getDescription(Map<String, Object> jsonMap) {
+    return (String) jsonMap.get(DESCRIPTION);
+  }
+
+  private String getName(Map<String, Object> jsonMap) {
+    return (String) jsonMap.get(NAME);
+  }
+
+  private String getStartDate(Map<String, Object> jsonMap) {
+    return (String) ((Map<String, Object>) jsonMap.get(START_DATE)).get("@value");
+  }
+
+  private String getDetailsUrl(Map<String, Object> jsonMap) {
+    return ((String)
+        ((Map<String, Object>) ((Map<String, Object>) jsonMap.get(OFFERS)).get(URL)).get("@id"));
+  }
+
+  private Elements getTicketListElements(String html) {
+    return Jsoup.parse(html).getElementById("ticket-form").getElementsByTag("td").not(".opt-panel");
+  }
+
+  private Double getPrice(String priceStr) {
+    return Double.valueOf(priceStr.replace(" ", "").replace("R$", "").replace(",", "."));
   }
 
   private LocalDate getDueDate(String dueDateStr) {

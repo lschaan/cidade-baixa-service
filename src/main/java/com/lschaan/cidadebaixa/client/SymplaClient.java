@@ -20,19 +20,19 @@ public class SymplaClient {
 
   @Autowired private Client client;
 
-  public String findFromSympla(Integer id) {
+  public String getClubPage(Integer id) {
     logger.info("Sending request for sympla informations for id {}", id);
     String idString = "id=" + id;
-    return client.findFromSympla(
+    return client.getClubPage(
         Constants.REQUESTED_WITH_HEADER,
         Constants.USER_AGENT_HEADER,
         MediaType.APPLICATION_FORM_URLENCODED_VALUE,
         idString);
   }
 
-  public String findDetailsFromSympla(String url) {
+  public String getPartyDetails(String url) {
     logger.info("Getting details from {} ", url);
-    return client.findDetailsFromSympla(
+    return client.getPartyDetails(
         URI.create(url),
         Constants.REQUESTED_WITH_HEADER,
         Constants.USER_AGENT_HEADER,
@@ -45,14 +45,14 @@ public class SymplaClient {
         value = "/site/futureUserPageEvents",
         produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
         consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    String findFromSympla(
+    String getClubPage(
         @RequestHeader("x-requested-with") String requestedWith,
         @RequestHeader("user-agent") String userAgent,
         @RequestHeader("Content-Type") String contentType,
         @RequestBody String body);
 
     @GetMapping
-    String findDetailsFromSympla(
+    String getPartyDetails(
         URI baseUrl,
         @RequestHeader("x-requested-with") String requestedWith,
         @RequestHeader("user-agent") String userAgent,

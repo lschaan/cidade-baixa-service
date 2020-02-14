@@ -32,23 +32,11 @@ public class SymplaService {
 
   @Autowired private HtmlService htmlService;
 
-  protected List<PartyDTO> getParties(ClubEnum club, LocalDate date, Double maxValue) {
+  public List<PartyDTO> getParties(ClubEnum club, LocalDate date, Double maxValue) {
     logger.info("Getting sympla parties for club {}", club);
     try {
-      return htmlService.getUrlListFromSympla(symplaClient.findFromSympla(club.getIdSympla()))
-          .stream()
-          .map(
-              url -> {
-                SymplaDTO symplaDTO =
-                    htmlService.getPartyFromSympla(symplaClient.findDetailsFromSympla(url));
-                return PartyDTO.builder()
-                    .partyName(symplaDTO.getName())
-                    .club(club)
-                    .date(getDate(symplaDTO))
-                    .openBar(symplaDTO.getName().contains("OPEN"))
-                    .tickets(getTickets(symplaDTO, maxValue))
-                    .build();
-              })
+      return getUrlList(club).stream()
+          .map(url -> buildParty(getSymplaDto(url), club, maxValue))
           .filter(party -> isOnDate(party, date))
           .filter(PartyValidator::hasTickets)
           .collect(Collectors.toList());
@@ -58,10 +46,30 @@ public class SymplaService {
     }
   }
 
+  private List<String> getUrlList(ClubEnum club) {
+    String html = symplaClient.getClubPage(club.getIdSympla());
+    return htmlService.extractUrlListFromSymplaHtml(html);
+  }
+
+  private SymplaDTO getSymplaDto(String url) {
+    String html = symplaClient.getPartyDetails(url);
+    return htmlService.extractSymplaPartyFromHtml(html);
+  }
+
+  private PartyDTO buildParty(SymplaDTO symplaDTO, ClubEnum club, Double maxValue) {
+    return PartyDTO.builder()
+        .partyName(symplaDTO.getName())
+        .club(club)
+        .date(getDate(symplaDTO))
+        .openBar(symplaDTO.getName().contains("OPEN"))
+        .tickets(getTickets(symplaDTO, maxValue))
+        .build();
+  }
+
   private List<TicketDTO> getTickets(SymplaDTO symplaDTO, Double maxValue) {
-    List<TicketDTO> tickets = htmlService.getTicketsFromSympla(symplaDTO.getHtml());
-    tickets.removeIf(ticket -> !isOnPriceRange(ticket, maxValue));
-    return tickets;
+    return htmlService.extractTicketListFromSymplaHtml(symplaDTO.getHtml()).stream()
+        .filter(ticket -> isOnPriceRange(ticket, maxValue))
+        .collect(Collectors.toList());
   }
 
   private LocalDate getDate(SymplaDTO symplaDTO) {
