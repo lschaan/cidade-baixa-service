@@ -1,7 +1,6 @@
 package com.lschaan.cidadebaixa.service;
 
 import com.lschaan.cidadebaixa.client.CuckoClient;
-import com.lschaan.cidadebaixa.client.response.CuckoResponse;
 import com.lschaan.cidadebaixa.dto.PartyDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,12 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_TIME_FORMAT;
+import static com.lschaan.cidadebaixa.stub.CuckoResponseStub.mockCuckoResponseList;
 import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyDto;
 import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyDtoWithSingleTicket;
 import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyList;
@@ -39,7 +37,7 @@ public class CuckoServiceTest {
     this.today = LocalDate.now();
     this.tomorrow = today.plusDays(1);
 
-    when(cuckoClient.getAll()).thenReturn(mockCuckoResponseList());
+    when(cuckoClient.getAll()).thenReturn(mockCuckoResponseList(today, tomorrow));
   }
 
   @Test
@@ -84,19 +82,5 @@ public class CuckoServiceTest {
   public void shouldReturnEmptyList_whenFilteredByDate() {
     List<PartyDTO> partyList = cuckoService.getParties(today.minusDays(1), null);
     Assert.assertEquals(Collections.emptyList().toString(), partyList.toString());
-  }
-
-  private List<CuckoResponse> mockCuckoResponseList() {
-    return Arrays.asList(mockCuckoResponse(today), mockCuckoResponse(tomorrow));
-  }
-
-  private CuckoResponse mockCuckoResponse(LocalDate date) {
-    return CuckoResponse.builder()
-        .name("party")
-        .date(date.atStartOfDay().format(DateTimeFormatter.ofPattern(ISO_DATE_TIME_FORMAT)))
-        .priceInAdvance(10.0)
-        .priceOnSite(20.0)
-        .message("description")
-        .build();
   }
 }
