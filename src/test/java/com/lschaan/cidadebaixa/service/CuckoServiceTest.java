@@ -12,14 +12,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.lschaan.cidadebaixa.stub.CuckoResponseStub.mockCuckoResponseList;
-import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyDto;
 import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyDtoWithSingleTicket;
 import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyList;
-import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockSingletonPartyListWithSingleTicket;
 import static com.lschaan.cidadebaixa.type.ClubEnum.CUCKO;
 import static org.mockito.Mockito.when;
 
@@ -55,32 +52,5 @@ public class CuckoServiceTest {
                 mockPartyDtoWithSingleTicket(CUCKO, tomorrow, 10.0))
             .toString(),
         partyList.toString());
-  }
-
-  @Test
-  public void shouldReturnPartyList_whenFilteredByDate() {
-    List<PartyDTO> partyList = cuckoService.getParties(today, null);
-    Assert.assertEquals(
-        Collections.singletonList(mockPartyDto(CUCKO, today)).toString(), partyList.toString());
-  }
-
-  @Test
-  public void shouldReturnPartyList_whenFilteredByDateAndValue() {
-    List<PartyDTO> partyList = cuckoService.getParties(today, 10.0);
-    Assert.assertEquals(
-        mockSingletonPartyListWithSingleTicket(CUCKO, today, 10.0).toString(),
-        partyList.toString());
-  }
-
-  @Test
-  public void shouldReturnEmptyList_whenFilteredByMaxValue() {
-    List<PartyDTO> partyList = cuckoService.getParties(null, 5.0);
-    Assert.assertEquals(Collections.emptyList().toString(), partyList.toString());
-  }
-
-  @Test
-  public void shouldReturnEmptyList_whenFilteredByDate() {
-    List<PartyDTO> partyList = cuckoService.getParties(today.minusDays(1), null);
-    Assert.assertEquals(Collections.emptyList().toString(), partyList.toString());
   }
 }

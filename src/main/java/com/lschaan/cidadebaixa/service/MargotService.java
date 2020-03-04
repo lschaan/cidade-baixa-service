@@ -5,7 +5,6 @@ import com.lschaan.cidadebaixa.client.response.MargotPartyResponse;
 import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.type.ClubEnum;
-import com.lschaan.cidadebaixa.validator.PartyValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.lschaan.cidadebaixa.validator.PartyValidator.isOnDate;
 import static com.lschaan.cidadebaixa.validator.TicketValidator.isOnPriceRange;
 
 @Service("MARGOT")
@@ -31,9 +28,6 @@ public class MargotService implements ClubService {
     logger.info("Getting all parties from margot with date {} and maxValue {}", date, maxValue);
     return client.getAll().getData().stream()
         .map(response -> getParty(maxValue, response))
-        .filter(party -> isOnDate(party, date))
-        .filter(PartyValidator::hasTickets)
-        .sorted(Comparator.comparing(PartyDTO::getDate))
         .collect(Collectors.toList());
   }
 

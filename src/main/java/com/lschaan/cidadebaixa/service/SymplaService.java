@@ -5,7 +5,6 @@ import com.lschaan.cidadebaixa.dto.PartyDTO;
 import com.lschaan.cidadebaixa.dto.SymplaDTO;
 import com.lschaan.cidadebaixa.dto.TicketDTO;
 import com.lschaan.cidadebaixa.type.ClubEnum;
-import com.lschaan.cidadebaixa.validator.PartyValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.lschaan.cidadebaixa.helper.Constants.ISO_DATE_FORMAT;
-import static com.lschaan.cidadebaixa.validator.PartyValidator.isOnDate;
 import static com.lschaan.cidadebaixa.validator.TicketValidator.isOnPriceRange;
 
 @Service
@@ -37,8 +35,6 @@ public class SymplaService {
     try {
       return getUrlList(club).stream()
           .map(url -> buildParty(getSymplaDto(url), club, maxValue))
-          .filter(party -> isOnDate(party, date))
-          .filter(PartyValidator::hasTickets)
           .collect(Collectors.toList());
     } catch (Exception e) {
       logger.error("Unable to get parties from sympla with club {}. Returning empty list", club, e);

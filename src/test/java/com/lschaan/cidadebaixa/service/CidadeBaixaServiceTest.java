@@ -19,6 +19,7 @@ import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyDtoWithSingleTi
 import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyList;
 import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockPartyListWithSingleTicket;
 import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockSingletonPartyList;
+import static com.lschaan.cidadebaixa.stub.PartyDTOStub.mockSingletonPartyListWithSingleTicket;
 import static com.lschaan.cidadebaixa.type.ClubEnum.CUCKO;
 import static com.lschaan.cidadebaixa.type.ClubEnum.MARGOT;
 import static com.lschaan.cidadebaixa.type.ClubEnum.NUVEM;
@@ -112,6 +113,13 @@ public class CidadeBaixaServiceTest {
                 mockPartyDtoWithSingleTicket(CUCKO, today, 10.0)));
     List<PartyDTO> partyList = cidadeBaixaService.getParties(null, today, null);
     Assert.assertEquals(
-        mockPartyListWithSingleTicket(CUCKO, today, tomorrow).toString(), partyList.toString());
+        mockSingletonPartyListWithSingleTicket(CUCKO, today, 10.0).toString(), partyList.toString());
+  }
+
+  @Test
+  public void shouldFilterPartyList_whenFilteredByDate () {
+    when(cuckoService.getParties(any(), any())).thenReturn(mockPartyListWithSingleTicket(CUCKO, today, tomorrow));
+    List<PartyDTO> partyList = cidadeBaixaService.getParties(CUCKO, today, null);
+    Assert.assertEquals(mockSingletonPartyListWithSingleTicket(CUCKO, today, 10.0).toString(), partyList.toString());
   }
 }
